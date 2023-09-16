@@ -80,7 +80,6 @@ const Registration = (props) => {
                                 type="email"
                                 name="email"
                                 validate={{
-                                    required: { value: true, errorMessage: 'Email is required' },
                                     email: { value: true, errorMessage: 'Invalid email address' },
                                 }}
                             />

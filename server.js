@@ -19,7 +19,7 @@ MongoClient.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true }, 
     app.post('/register', async (req, res) => {
         try {
             console.log('req on register', req?.body);
-            const already = await collection.findOne({ $or: [{ email: req?.body?.email }, { mobile: req?.body?.mobile }] });
+            const already = await collection.findOne({ mobile: req?.body?.mobile });
             console.log('already', already);
             if (already) {
                 res.status(208).send({
