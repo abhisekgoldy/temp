@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { FormGroup, Label, Button, Row, Col } from 'reactstrap';
 import { AvForm, AvField, AvInput, AvGroup } from 'availity-reactstrap-validation';
 import { toast } from 'react-toastify';
-
+import { BallTriangle } from 'react-loader-spinner'
 
 const Registration = (props) => {
     const [isCompany, setIsCompany] = useState(false);
@@ -23,7 +23,8 @@ const Registration = (props) => {
                 body: JSON.stringify(v)
             }).then(json => json.json())
                 .then(res => {
-                    if (res.statusCode == 200) {
+                    setLoading(false);
+                    if (res.statusCode === 200) {
                         formRef.current.reset();
                         const phoneNumber = '+91' + v.mobile; // Replace with your desired WhatsApp number
                         const message = 'Hello, this is a predefined message!'; // Replace with your desired message
@@ -33,18 +34,32 @@ const Registration = (props) => {
                         // Create the WhatsApp URL
                         window.open(`https://wa.me/${encodedPhoneNumber}?text=${encodedMessage}`);
                     } else {
-                        toast.error("error : "+ res?.error)
+                        toast.error(res?.error)
                     }
                 })
                 .catch(err => {
-                    toast.error(err)
+                    toast.error(err);
                     console.log('error while submitting data', err);
                 });
         }
     };
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-3">
+            {loading &&
+                <div className='loader'>
+                    <BallTriangle
+                        height={100}
+                        width={100}
+                        radius={5}
+                        color="#ff0000"
+                        ariaLabel="ball-triangle-loading"
+                        wrapperClass={{}}
+                        wrapperStyle=""
+                        visible={true}
+                    />
+                </div>
+            }
             <h2 className='page-title'>Registration</h2>
             <AvForm onValidSubmit={handleSubmit} className="form" ref={formRef}>
                 <Row>
@@ -80,6 +95,7 @@ const Registration = (props) => {
                                 validate={{
                                     required: { value: true, errorMessage: 'mobile is required' },
                                     minLength: { value: 8, errorMessage: 'Mobile must be at least 8 characters' },
+                                    maxLength: { value: 10, errorMessage: 'Mobile must be most 10 characters' },
                                 }}
                             />
                         </FormGroup>
@@ -87,7 +103,7 @@ const Registration = (props) => {
                     <Col md={6} style={{ display: 'flex' }}>
                         <FormGroup style={{ marginRight: 5 }}>
                             <AvGroup check style={{ display: 'flex', alignItems: 'center' }}>
-                                <AvInput className="check" type="checkbox" name="checkbox" onChange={e => setIsCompany(e.target.value == "false" ? true : false)} />
+                                <AvInput className="check" type="checkbox" name="checkbox" onChange={e => setIsCompany(e.target.value === "false" ? true : false)} />
                                 <Label check for="checkbox" style={{ marginLeft: 10 }}>Company</Label>
                             </AvGroup>
                         </FormGroup>
@@ -116,7 +132,12 @@ const Registration = (props) => {
                     />
                 </FormGroup>
                 <Row style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
-                    <Button style={{ backgroundColor: "#ff0000", border: "1px solid #fff", width: '20%', height: 50 }} type="submit">
+                    <Button style={{ backgroundColor: "#ff0000", border: "1px solid #fff", width: '20%', height: 40 }} type="reset"
+                        onClick={()=>formRef.current.reset()}
+                    >
+                        Reset
+                    </Button>
+                    <Button style={{ backgroundColor: "#ff0000", border: "1px solid #fff", width: '20%', height: 40, marginLeft:20 }} type="submit">
                         Register
                     </Button>
                 </Row>

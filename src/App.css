@@ -19,17 +19,19 @@
   min-height: 100px;
   color: white;
   padding: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
-.page-title{
+.page-title {
   text-align: center;
 }
 
-.form{
+.form {
   margin-top: 40px;
 }
 
-.form label{
+.form label {
   text-align: left;
 }
 
@@ -49,4 +51,27 @@
 .form-check-input:checked[type="checkbox"] {
   background-color: #ff0000 !important;
   border-color: #ff0000 !important;
+}
+
+.input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.loader {
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e6e6e699;
 }

@@ -19,10 +19,18 @@ MongoClient.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true }, 
     app.post('/register', async (req, res) => {
         try {
             console.log('req on register', req?.body);
+            const already = await collection.findOne({ $or: [{ email: req?.body?.email }, { mobile: req?.body?.mobile }] });
+            console.log('already', already);
+            if (already) {
+                res.status(208).send({
+                    message: "FAILED",
+                    data: null,
+                    error: "Already Submitted!",
+                    statusCode: 208
+                });
+                return;
+            }
             const dataToSave = await collection.insertOne({ ...req?.body, _id: new mongodb.ObjectId(), createdAt: new Date() });
-            // const savedData = await dataToSave.save();
-            // const data = { message: 'Hello from Node.js!' };
-            // res.json(dataToSave);
             res.status(200).send({
                 message: "SUCCESS",
                 data: dataToSave,
