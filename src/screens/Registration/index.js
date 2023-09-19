@@ -3,11 +3,14 @@ import { FormGroup, Label, Button, Row, Col } from 'reactstrap';
 import { AvForm, AvField, AvInput, AvGroup } from 'availity-reactstrap-validation';
 import { toast } from 'react-toastify';
 import { BallTriangle } from 'react-loader-spinner'
+import CameraComponent from '../../component/Camera';
 
 const Registration = (props) => {
     const [isCompany, setIsCompany] = useState(false);
     const [loading, setLoading] = useState(false);
     const formRef = useRef();
+    const [isCamera, setIsCamera] = useState(false);
+    const [mobile, setMobile] = useState("");
 
     const handleSubmit = (e, v) => {
         console.log('Form submitted with values:', v);
@@ -44,8 +47,24 @@ const Registration = (props) => {
         }
     };
 
+    const handleGiftInput = (val) => {
+        if (val)
+            if (mobile) {
+                if (mobile?.length == 10) {
+                    setIsCamera(val);
+                } else
+                    toast.error("Enter a valid 10 digit mobile number!")
+            } else
+                toast.error("Enter mobile number to capture image!")
+    }
+
     return (
         <div className="container mt-3">
+            <CameraComponent
+                isOpen={isCamera}
+                setIsOpen={setIsCamera}
+                mobile={mobile}
+            />
             {loading &&
                 <div className='loader'>
                     <BallTriangle
@@ -91,6 +110,7 @@ const Registration = (props) => {
                             <AvField
                                 type="number"
                                 name="mobile"
+                                onChange={(e) => setMobile(e.target.value)}
                                 validate={{
                                     required: { value: true, errorMessage: 'mobile is required' },
                                     minLength: { value: 8, errorMessage: 'Mobile must be at least 8 characters' },
@@ -99,25 +119,41 @@ const Registration = (props) => {
                             />
                         </FormGroup>
                     </Col>
-                    <Col md={6} style={{ display: 'flex' }}>
+                    
+                    <Col md={6} className='company_section'>
+                        <div className='second__1'>
+                            <FormGroup style={{ marginRight: 5 }}>
+                                <AvGroup check style={{ display: 'flex', alignItems: 'center' }}>
+                                    <AvInput className="check" type="checkbox" name="checkbox" onChange={e => setIsCompany(e.target.value === "false" ? true : false)} />
+                                    <Label check for="checkbox" style={{ marginLeft: 10 }}>Company</Label>
+                                </AvGroup>
+                            </FormGroup>
+                        </div>
+                        <div className='second_i'>
+                            {isCompany &&
+
+                                <FormGroup style={{ width: '100%' }}>
+                                    <Label> Company Name</Label>
+                                    <AvField
+                                        type="text"
+                                        name="companyName"
+                                        validate={{
+                                            required: { value: true, errorMessage: 'Company name is required' },
+                                        }}
+                                    />
+                                </FormGroup>
+
+                            }
+                        </div>
+                    </Col>
+
+                    <Col md={6}>
                         <FormGroup style={{ marginRight: 5 }}>
                             <AvGroup check style={{ display: 'flex', alignItems: 'center' }}>
-                                <AvInput className="check" type="checkbox" name="checkbox" onChange={e => setIsCompany(e.target.value === "false" ? true : false)} />
-                                <Label check for="checkbox" style={{ marginLeft: 10 }}>Company</Label>
+                                <AvInput className="check" type="checkbox" name="gifted" checked={isCamera} onChange={e => handleGiftInput(e.target.value === "false" ? true : false)} />
+                                <Label check for="gifted" style={{ marginLeft: 10 }}>Gifted ?</Label>
                             </AvGroup>
                         </FormGroup>
-                        {isCompany &&
-                            <FormGroup style={{ width: '100%' }}>
-                                <Label >Name</Label>
-                                <AvField
-                                    type="text"
-                                    name="companyName"
-                                    validate={{
-                                        required: { value: true, errorMessage: 'Company name is required' },
-                                    }}
-                                />
-                            </FormGroup>
-                        }
                     </Col>
                 </Row>
                 <FormGroup>
@@ -132,11 +168,11 @@ const Registration = (props) => {
                 </FormGroup>
                 <Row style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
                     <Button style={{ backgroundColor: "#ff0000", border: "1px solid #fff", width: '20%', height: 40 }} type="reset"
-                        onClick={()=>formRef.current.reset()}
+                        onClick={() => formRef.current.reset()}
                     >
                         Reset
                     </Button>
-                    <Button style={{ backgroundColor: "#ff0000", border: "1px solid #fff", width: '20%', height: 40, marginLeft:20 }} type="submit">
+                    <Button style={{ backgroundColor: "#ff0000", border: "1px solid #fff", width: '20%', height: 40, marginLeft: 20 }} type="submit">
                         Register
                     </Button>
                 </Row>
