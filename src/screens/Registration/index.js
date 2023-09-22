@@ -11,6 +11,7 @@ const Registration = (props) => {
     const formRef = useRef();
     const [isCamera, setIsCamera] = useState(false);
     const [mobile, setMobile] = useState("");
+    const [whatsapp, setWhatsapp] = useState(true);
 
     const handleSubmit = (e, v) => {
         console.log('Form submitted with values:', v);
@@ -28,14 +29,19 @@ const Registration = (props) => {
                 .then(res => {
                     setLoading(false);
                     if (res.statusCode === 200) {
+                        toast.success("Success");
+                        setIsCompany(false);
                         formRef.current.reset();
-                        const phoneNumber = '+91' + v.mobile; // Replace with your desired WhatsApp number
-                        const message = 'Hello, this is a predefined message!'; // Replace with your desired message
-                        // Encode the phone number and message for the URL
-                        const encodedPhoneNumber = encodeURIComponent(phoneNumber);
-                        const encodedMessage = encodeURIComponent(message);
-                        // Create the WhatsApp URL
-                        window.open(`https://wa.me/${encodedPhoneNumber}?text=${encodedMessage}`);
+                        if (whatsapp) {
+                            const phoneNumber = '+91' + v.mobile;
+                            // const imageUrl = "https://eeasy.s3.ap-south-1.amazonaws.com/Continent/1686995938199.webp";
+                            const message = `Dear ${v?.name}, \nWe want to extend our heartfelt thanks for joining us. Your presence made the event truly special and memorable. We appreciate your support and enthusiasm.\nOnce again, thank you for being a part. We hope to see you at future events! \nBest regards, \nShree Associates`;
+                            const encodedPhoneNumber = encodeURIComponent(phoneNumber);
+                            const encodedMessage = encodeURIComponent(message);
+                            window.open(`https://wa.me/${encodedPhoneNumber}?text=${encodedMessage}`);
+                            // const whatsappUrl = `https://api.whatsapp.com/send?phone=${encodedPhoneNumber}&text=${encodedMessage}`;
+                            // window.open(whatsappUrl);
+                        }
                     } else {
                         toast.error(res?.error)
                     }
@@ -79,7 +85,23 @@ const Registration = (props) => {
                     />
                 </div>
             }
-            <h2 className='page-title'>Registration</h2>
+            <Row>
+                <Col md={8}>
+                    <h2 className='page-title'>Registration</h2>
+                </Col>
+                <Col md={4}>
+                    <AvForm>
+                        <div className='second__1'>
+                            <FormGroup style={{ marginRight: 5 }}>
+                                <AvGroup check style={{ display: 'flex', alignItems: 'center' }}>
+                                    <AvInput className="check" type="checkbox" name="checkbox" value={whatsapp} onChange={e =>{console.log('changing thanks whatsapp', e.target.value); setWhatsapp(e.target.value === "false" ? true : false)}} />
+                                    <Label check for="checkbox" style={{ marginLeft: 10 }}>Whatsapp Thanks</Label>
+                                </AvGroup>
+                            </FormGroup>
+                        </div>
+                    </AvForm>
+                </Col>
+            </Row>
             <AvForm onValidSubmit={handleSubmit} className="form" ref={formRef}>
                 <Row>
                     <Col md={6}>
@@ -119,7 +141,7 @@ const Registration = (props) => {
                             />
                         </FormGroup>
                     </Col>
-                    
+
                     <Col md={6} className='company_section'>
                         <div className='second__1'>
                             <FormGroup style={{ marginRight: 5 }}>

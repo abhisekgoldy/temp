@@ -59,6 +59,7 @@ function CameraComponent(props) {
             downloadLink.href = imageData;
             downloadLink.download = mobile + '.png';
             downloadLink.click();
+            setIsOpen(false);
         }
     }
 

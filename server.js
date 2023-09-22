@@ -20,7 +20,7 @@ MongoClient.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true }, 
         try {
             console.log('req on register', req?.body);
             const already = await collection.findOne({ mobile: req?.body?.mobile });
-            console.log('already', already);
+            // console.log('already', already);
             if (already) {
                 res.status(208).send({
                     message: "FAILED",
